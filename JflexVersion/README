@@ -1,0 +1,71 @@
+Petre Cosmin 333CB
+
+Tema LFA
+JFLEX:
+    In jflex am avut de implementat un parser pentru IMP, apoi acestea urmand
+a fi interpretate.
+    Pentru inceput in fisierul Hello.flex am declarat 2 stive, una fiind
+utilizata pentru a tine minte variabilele pentru a fi folosit mai tarziu la
+interpretare si o stiva pe care voi pune elementele ajutatoare la parsare.
+In continuare mi-am declarat functiile ajutatoare:
+    - sequenceMaker - pentru a alcatui lista de secvente; scot de pe stiva
+ultimul element si il pun in secventa cu penultimul pana voi avea un singur
+element(nod)
+    - exprSimplify(partea cea mai urata) - simplificarea parantezelor si de
+asemenea folosita la asignare; scot de pe stiva un element si un simbol, daca
+este "!" aplic ! asupra elementului si il pun pe stiva temporara, daca este
+"/" mai scot de pe stiva un element si pun DivNode pe stiva temporara; pentru
+celelalte simboluri le pun automat; in continuare realizez operatia de adunare
+asemanator impartirii "/" urmand ca apoi sa realizez ">" si intr-un final "&&";
+am implementat aceasta rezolvare deoarece am nevoie de precedenta operatorilor.
+    - getContentBlock - realizeaza BlockNode de elementul din interior; daca nu
+exista, child va fi null.
+    Apoi dupa declarea unor expresii regulate(number, var, etc.) si starri
+ajutatoare, a venit momentul parsarii. Obtin variabilele si le pun pe stiva
+in care retin variabilele. Trec in starea MAIN. In starea MAIN daca primesc o
+variabila, inseamna ca urmeaza o asignare si trec in ASSIG, insa inainte pun
+un simbol sa stiu unde sa ma intorc("main"). La intalnirea ")" realizez
+simplificare de paranteze. La intalnirea ";" stiu ca s-a terminat asignarea,
+pun pe stiva AssignmentNode-ul corespunzator si ma intorc in functie de simbolul
+de pe stiva.
+    Daca primesc un "if" trec in starea CONDITIONIF, daca primesc un while trec
+in CONDITIONWHILE. Diferenta este ca din CONDITIONWHILE voi trece la BODYWHILE
+si din CONDITIONIF trec in BODYIF apoi mai departe in ELSE. La intalnirea unui
+caracter "}" realizez BlockNode si continui(in cazul BODYIF) sau ma intorc
+corespunzator. Construiesc nodurile IfNode sau WhileNode.
+    In types.java am declarat tipurile de Noduri folosindu-ma de interfata Node.
+Acestea vor implementa show() si interpret(dict), unde dict este un dictionar
+in care voi tine minte valorile variabilelor. Nodurile terminale(BoolNode, IntNode,
+VarNode) vor tine valorile ca string. Celelalte noduri vor avea copii de tipul Node
+cum se specifica in enunt si show de asemenea este realizat conform acestuia.
+    Pentru interpretare am folosit cum am spus mai inainte un HashMap<String,
+String>(nume_variabila, valoarea - initial null). Verificarea erorilor o realizez
+la runtime(de aceea pica testul 10, deoarece nu imi intra pe ramura respectiva
+niciodata). Nodurile terminale vor intoarce prin interpret valorile retinute;
+PlusNode verifica daca valorile respective nu sunt neasignate sau nu exista
+in lista(intoarce eroare Unassigned contor); DivNode asemanator PlusNode, doar
+ca verific sa nu se realizeze de asemenea DivideByZero; AssignmentNode acelasi
+procedeu, doar ca aici introduc si in dictionar noua valor pentru variabila
+respectiva; Pe IfNode verific daca avem conditie valida, intru pe ramura
+necesara, realizez operatiile din interior si verific de erori; Pe WhileNode
+realizez operatile din interior si verific de erori cata vreme conditia este
+valida; la SequenceNode interpretez child1, verific erorile, interpretez daca
+mai este necesar child2 si verific de erori.
+    Un aspect important il considera si determinarea liniei cu eroarea, in
+cazul unei erori eu intorcand un string de forma "<Error>Nume_Eroare count".
+Cand se ajunge la MainNode, acest count va avea exact numarul liniei. Pentru
+asta, daca avem SequenceNode si eroarea este la child2, realizez numararea
+liniilor de la child1 si adaug la count. Asemanator la if, daca se intra
+pe ramura else, obtin numarul liniilor pe ramura principala si adun la count.
+    Am presupus ca tot timpul instructiunile sunt de forma:
+    if (){
+        ...
+    } else {
+        ...
+    }
+    while () {
+        ...
+    }
+    In Parser.java afisez arborele construit dupa ce fac o ultima restrangere
+a secventelor. In cazul in care nu am primit eroare, afisez lista de variabile
+din dictionar, altfel nume_eroare + numar_linie.

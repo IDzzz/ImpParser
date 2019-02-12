@@ -1,0 +1,20 @@
+Petre Cosmin 333CB
+
+Tema LFA
+BONUS
+ANTLR:
+    Pentru partea de bonus am avut de implementat parser-ul folosind ANTLR.
+Dificultatea a constat in faptul ca ANTLR nu este foarte bine documentat si
+are o gramada de buguri, dar este destul de puternic. Pentru parser am folosit
+AntlrWorks2.1 ce permite si vizualizarea tree-ului corespunzator. Dupa definirea
+regulilor(antlr permite definirea recursiva, yeeee) si avand mare grija la
+precedenta operatiilor a intervenit o alta problema. Sa afisez rezultatul in
+formatul cerut. Pentru asta am implementat un Visitor astfel:
+    - verific de ce tip este nodul terminal si il afisez ca fiind <VarNode>, etc.
+    - pentru BlockNode verific daca exista copil; daca nu exista, nu apendez nimic;
+altfel apendez rezultatul intors de copil
+    - pentru celelalte tipuri de noduri apendez la tipul nodului rezultatele
+intoarse de parcurgerea in continuare a copiilor
+    Pentru rulare antlr este necesar ca /usr/local/lib/antlr-4.7.1-complete.jar
+sa fie deja inclus in CLASSPATH.
+    Sarbatori fericite! :)
